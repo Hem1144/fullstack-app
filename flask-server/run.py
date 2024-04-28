@@ -1,8 +1,10 @@
-from flask import Flask
-from app.routes import api
+# run.py
 
-app = Flask(__name__)
-app.register_blueprint(api, url_prefix="/api")
+from app import create_app
 
 if __name__ == "__main__":
+    # Create the Flask app and get the SQLAlchemy instance
+    app, db = create_app()
+
+    # Start the server
     app.run(debug=True)

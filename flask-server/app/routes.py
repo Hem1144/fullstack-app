@@ -1,10 +1,14 @@
-from flask import Blueprint, jsonify, request
+# app/routes.py
 
-app = Blueprint("/api", __name__)
+from flask import Blueprint, jsonify, request
+# from app import db  
+
+api = Blueprint("api", __name__)
 
 posts = []
 categories = []
 tags = []
+
 
 def validate_post(post):
     required_fields = ["title", "content", "author", "category", "tags"]
@@ -26,12 +30,12 @@ def validate_tag(tag):
 
 
 # Routes for CRUD operations on posts
-@app.route("/posts", methods=["GET"])
+@api.route("/posts", methods=["GET"])
 def get_posts():
     return jsonify(posts)
 
 
-@app.route("/posts", methods=["POST"])
+@api.route("/posts", methods=["POST"])
 def create_post():
     data = request.json
     if validate_post(data):
@@ -41,7 +45,7 @@ def create_post():
         return jsonify({"error": "Invalid post data"}), 400
 
 
-@app.route("/posts/<int:id>", methods=["GET"])
+@api.route("/posts/<int:id>", methods=["GET"])
 def get_post(id):
     if id < len(posts):
         return jsonify(posts[id])
@@ -49,7 +53,7 @@ def get_post(id):
         return jsonify({"error": "Post not found"}), 404
 
 
-@app.route("/posts/<int:id>", methods=["PUT"])
+@api.route("/posts/<int:id>", methods=["PUT"])
 def update_post(id):
     if id < len(posts):
         data = request.json
@@ -62,7 +66,7 @@ def update_post(id):
         return jsonify({"error": "Post not found"}), 404
 
 
-@app.route("/posts/<int:id>", methods=["DELETE"])
+@api.route("/posts/<int:id>", methods=["DELETE"])
 def delete_post(id):
     if id < len(posts):
         del posts[id]
@@ -72,32 +76,32 @@ def delete_post(id):
 
 
 # Routes for CRUD operations on categories
-@app.route("/categories", methods=["GET"])
+@api.route("/categories", methods=["GET"])
 def get_categories():
     return jsonify(categories)
 
 
-@app.route("/categories", methods=["POST"])
+@api.route("/categories", methods=["POST"])
 def create_category():
     data = request.json
     if validate_category(data):
-        categories.append(data)
+        categories.append(data)  # Append to categories list
         return jsonify({"message": "Category created successfully"}), 201
     else:
         return jsonify({"error": "Invalid category data"}), 400
 
 
 # Routes for CRUD operations on tags
-@app.route("/tags", methods=["GET"])
+@api.route("/tags", methods=["GET"])
 def get_tags():
     return jsonify(tags)
 
 
-@app.route("/tags", methods=["POST"])
+@api.route("/tags", methods=["POST"])
 def create_tag():
     data = request.json
     if validate_tag(data):
-        tags.append(data)
+        tags.append(data)  # Append to tags list
         return jsonify({"message": "Tag created successfully"}), 201
     else:
         return jsonify({"error": "Invalid tag data"}), 400

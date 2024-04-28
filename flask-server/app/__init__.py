@@ -1,15 +1,25 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app.routes import api
-from app.auth import auth
+from dotenv import load_dotenv
+import os
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
-app.config["SECRET_KEY"] = "dulalfullstack"
-db = SQLAlchemy(app)
 
-app.register_blueprint(api, url_prefix="/api")
-app.register_blueprint(auth, url_prefix="/auth")
+def create_app():
+    app = Flask(__name__)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    load_dotenv()
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
+    db = SQLAlchemy(app)
+
+    from app.routes import api
+    from app.auth import auth
+
+    app.register_blueprint(api, url_prefix="/api")
+    app.register_blueprint(auth, url_prefix="/auth")
+
+    print("Database connected successfully.")
+
+    return app, db
